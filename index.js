@@ -1,7 +1,9 @@
 const puppeteer = require('puppeteer');
-const express = require('express'),
+const express = require('express');
+require('dotenv').config({path:"D:/Screenshot/.env"})
 app = express();
 bodyParser = require('body-parser')
+console.log(process.env.PORT_NUMBER)
 app.use(bodyParser.json({limit: '50mb', extended: true}));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true })); 
 app.use(express.static("D:/Screenshot"+'/public'))
@@ -97,7 +99,7 @@ app.post('/write',(async (req,res)=> {
     }))
 
     
-    app.listen(3000, () => {
+    app.listen(process.env.PORT_NUMBER || 8080, () => {
         console.log('ResponsesToFile App is listening now! Send them requests my way!');
         console.log(`Data is being stored at location:`);
       });
