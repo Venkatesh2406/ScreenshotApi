@@ -1,8 +1,29 @@
 {
+  "name": "screenshot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Venkatesh2406/ScreenshotApi.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Venkatesh2406/ScreenshotApi/issues"
+  },
+  "homepage": "https://github.com/Venkatesh2406/ScreenshotApi#readme",
   "dependencies": {
+    "body-parser": "^1.20.1",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
-    "install": "^0.13.0",
+    "express-validator": "^6.14.2",
+    "fs": "^0.0.1-security",
+    "nodemailer": "^6.8.0",
     "puppeteer": "^19.4.1"
   }
 }
