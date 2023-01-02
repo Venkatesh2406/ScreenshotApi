@@ -362,7 +362,24 @@ body("personnumber").exists().isLength({min:1}).withMessage("Check personnumber"
     try{
 
     fs.readdirSync("./Screenshots").filter(file => file.startsWith(req.params.id)).forEach(file => {
-      filelist+=file+"\n"
+      let timediff=""
+	  var statobj=fs.statSync("./Screenshots/"+file)
+		var date1=new Date()
+		var date2=new Date(statobj.birthtime)
+		var diff=date1.getTime()-date2.getTime()
+		var mins=Math.round(diff/60000)
+		timediff="Created "+String(mins)+" minutes ago"
+		if(mins>60){
+	    	     timediff="Created "+String(Math.round(mins/60,1).toFixed(1))+" hours ago"
+			if(Math.round(mins/60,1).toFixed(1)>16){
+			      timediff="Created "+String((Math.round(Math.round(diff/60000),1)/1440).toFixed(1))+" days ago"
+			}
+		}
+
+    filelist+=file+"("+timediff+")"+"\n"
+    
+      
+      
       
     });
     //console.log(filelist)
