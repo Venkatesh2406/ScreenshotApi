@@ -30,6 +30,8 @@ body("personnumber").exists().isLength({min:1}).withMessage("Check personnumber"
         let startdate=""
         let enddate=""
         let headless=true
+	let description=""
+	let email=""
         if(req.body.Payperiod!=null){
           payperiod=req.body.Payperiod
         }
@@ -42,8 +44,15 @@ body("personnumber").exists().isLength({min:1}).withMessage("Check personnumber"
         if(req.body.headless!=null){
           headerless=req.body.headless
         }
+	if(req.body.description!=null){
+	  description=req.body.description
+	}
+	if(req.body.email!=null){
+	email=req.body.email
+	}
+
         console.log(payperiod)
-    
+        console.log(email)
         const browser = await puppeteer.launch({
         args: ['--no-sandbox'],
         headless:req.body.headless
@@ -114,7 +123,7 @@ body("personnumber").exists().isLength({min:1}).withMessage("Check personnumber"
         const element1=await page.$('#_timeFrame')
         const spanname=await page.evaluate(el => el.textContent, element1)
         const span=spanname.replaceAll("/","-")
-        const filename=personnumber+" "+req.body.Description+" "+span+".png"
+        const filename=personnumber+" "+description+" "+span+".png"
         console.log(filename)
         await page.waitForTimeout(3000)
         await page.waitForSelector("#tile_tile_7 > span")
@@ -126,7 +135,7 @@ body("personnumber").exists().isLength({min:1}).withMessage("Check personnumber"
         await page.waitForTimeout(3000)
         await page.click('#profileSignOut_button')
         await browser.close(); // <-- close browser after everything is done*/
-        if(req.body.email!=null || req.body.email!=""){
+        if( email!=""){
             transporter=nodemailer.createTransport({
             service:"gmail",
             auth:{
@@ -140,8 +149,8 @@ body("personnumber").exists().isLength({min:1}).withMessage("Check personnumber"
             
             let mailOptions={
             from:"mailtesting5656@gmail.com",
-            to:req.body.email,
-            subject:"Testing Result of "+req.body.Description,
+            to:req.body.email || "venkateshm2406@gmail.com",
+            subject:"Testing Result of "+description || personnumber,
             attachments:[
             {filename:filename || "pic.png",path:"./Screenshots/"+filename || "./Screenshots/pic.png"}
             ]
@@ -322,10 +331,29 @@ body("personnumber").exists().isLength({min:1}).withMessage("Check personnumber"
 
   app.get('/filelist',(req,res)=>{
     let filelist=""
-    try{
-
-    fs.readdirSync("/Screenshot/Screenshots").forEach(file => {
-      filelist+=file+"\n"
+    try{    
+    fs.readdirSync("./Screenshots").forEach(file => {
+	    let  timediff="";
+	    fs.stat("./Screenshots/"+file,(error,stats)=>{
+	if(error){
+	     console.log(error);
+	     return
+	}else{
+		var date1=new Date()
+		var date2=new Date(stats.birthtime)
+		var diff=date1.getTime()-date2.getTime()
+		var mins=Math.round(diff/60000)
+		timediff="Created "+String(mins)+" minutes ago"
+		if(mins>60){
+	    	     timediff="Created "+String(Math.round(mins/60,1).toFixed(1))+" hours ago"
+			if(Math.round(mins/60,1).toFixed(1)>16){
+			      timediff="Created "+String((Math.round(Math.round(diff/60000),1)/1440).toFixed(1))+" days ago"
+			}
+		}
+	}
+	    })
+		    filelist+=file+" "+timediff+"\n"
+    
       
     });
     res.status(200).send(filelist)
@@ -340,7 +368,7 @@ body("personnumber").exists().isLength({min:1}).withMessage("Check personnumber"
     //console.log(req.params.id)
     try{
 
-    fs.readdirSync("/Screenshot/Screenshots").filter(file => file.startsWith(req.params.id)).forEach(file => {
+    fs.readdirSync("./Screenshots").filter(file => file.startsWith(req.params.id)).forEach(file => {
       filelist+=file+"\n"
       
     });
