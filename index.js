@@ -333,14 +333,10 @@ body("personnumber").exists().isLength({min:1}).withMessage("Check personnumber"
     let filelist=""
     try{    
     fs.readdirSync("./Screenshots").forEach(file => {
-	    let  timediff="";
-	    fs.stat("./Screenshots/"+file,(error,stats)=>{
-	if(error){
-	     console.log(error);
-	     return
-	}else{
+	  let timediff=""
+	  var statobj=fs.statSync("./Screenshots/"+file)
 		var date1=new Date()
-		var date2=new Date(stats.birthtime)
+		var date2=new Date(statobj.birthtime)
 		var diff=date1.getTime()-date2.getTime()
 		var mins=Math.round(diff/60000)
 		timediff="Created "+String(mins)+" minutes ago"
@@ -350,11 +346,8 @@ body("personnumber").exists().isLength({min:1}).withMessage("Check personnumber"
 			      timediff="Created "+String((Math.round(Math.round(diff/60000),1)/1440).toFixed(1))+" days ago"
 			}
 		}
-	}
-	    })
-		    filelist+=file+" "+timediff+"\n"
-    
-      
+
+    filelist+=file+"("+timediff+")"+"\n"
     });
     res.status(200).send(filelist)
   }catch{
