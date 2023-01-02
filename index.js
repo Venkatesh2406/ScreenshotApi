@@ -305,7 +305,7 @@ body("personnumber").exists().isLength({min:1}).withMessage("Check personnumber"
     to:req.body.email,
     subject:"Testing Result",
     attachments:[
-    {filename:req.body.filename,path:"./Screenshots/"+req.body.filename}
+    {filename:req.body.filename,path:"/Screenshots/"+req.body.filename}
     ]
     };
     
